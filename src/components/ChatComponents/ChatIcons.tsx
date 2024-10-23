@@ -9,12 +9,7 @@ import { Notice, Vault } from "obsidian";
 import React, { useEffect, useState } from "react";
 
 import { ChainType } from "@/chainFactory";
-import {
-  ConnectionIcon,
-  RefreshIcon,
-  SaveAsNoteIcon,
-  UseActiveNoteAsContextIcon,
-} from "@/components/Icons";
+import { RefreshIcon, SaveAsNoteIcon, UseActiveNoteAsContextIcon } from "@/components/Icons";
 import { stringToChainType } from "@/utils";
 
 interface ChatIconsProps {
@@ -112,7 +107,6 @@ const ChatIcons: React.FC<ChatIconsProps> = ({
       new Notice("No active file");
       return;
     }
-
     const activeNoteContent = await app.vault.cachedRead(activeFile);
     const similarChunks = await onFindSimilarNotes(activeNoteContent, activeFile.path);
     new SimilarNotesModal(app, similarChunks).open();
