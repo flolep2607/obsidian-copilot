@@ -15,71 +15,49 @@ export enum ChatModels {
   GPT_4_TURBO = "gpt-4-turbo",
   GEMINI_PRO = "gemini-1.5-pro",
   GEMINI_FLASH = "gemini-1.5-flash",
-  AZURE_OPENAI = "azure-openai",
-  CLAUDE_3_5_SONNET = "claude-3-5-sonnet-20240620",
-  CLAUDE_3_HAIKU = "claude-3-haiku-20240307",
-  COMMAND_R = "command-r",
-  COMMAND_R_PLUS = "command-r-plus",
 }
 
 // Model Providers
 export enum ChatModelProviders {
-  OPENAI = "openai",
-  AZURE_OPENAI = "azure openai",
-  ANTHROPIC = "anthropic",
-  COHEREAI = "cohereai",
   GOOGLE = "google",
-  OPENROUTERAI = "openrouterai",
-  GROQ = "groq",
-  OLLAMA = "ollama",
-  LM_STUDIO = "lm-studio",
-  OPENAI_FORMAT = "3rd party (openai-format)",
+  COPILOT = "github copilot",
 }
 
 export const BUILTIN_CHAT_MODELS: CustomModel[] = [
   {
-    name: ChatModels.GPT_4o,
-    provider: ChatModelProviders.OPENAI,
+    name: "gpt-4o",
+    provider: ChatModelProviders.COPILOT,
     enabled: true,
     isBuiltIn: true,
     core: true,
   },
   {
-    name: ChatModels.GPT_4o_mini,
-    provider: ChatModelProviders.OPENAI,
+    name: "gpt-4o-mini",
+    provider: ChatModelProviders.COPILOT,
     enabled: true,
     isBuiltIn: true,
     core: true,
   },
   {
-    name: ChatModels.GPT_4_TURBO,
-    provider: ChatModelProviders.OPENAI,
+    name: "gpt-4-0125-preview",
+    provider: ChatModelProviders.COPILOT,
     enabled: true,
     isBuiltIn: true,
+    core: true,
   },
   {
-    name: ChatModels.CLAUDE_3_5_SONNET,
-    provider: ChatModelProviders.ANTHROPIC,
+    name: "gpt-4",
+    provider: ChatModelProviders.COPILOT,
     enabled: true,
     isBuiltIn: true,
+    core: true,
   },
   {
-    name: ChatModels.CLAUDE_3_HAIKU,
-    provider: ChatModelProviders.ANTHROPIC,
+    name: "gpt-3.5-turbo",
+    provider: ChatModelProviders.COPILOT,
     enabled: true,
     isBuiltIn: true,
-  },
-  {
-    name: ChatModels.COMMAND_R,
-    provider: ChatModelProviders.COHEREAI,
-    enabled: true,
-    isBuiltIn: true,
-  },
-  {
-    name: ChatModels.COMMAND_R_PLUS,
-    provider: ChatModelProviders.COHEREAI,
-    enabled: true,
-    isBuiltIn: true,
+    core: true,
   },
   {
     name: ChatModels.GEMINI_PRO,
@@ -93,70 +71,26 @@ export const BUILTIN_CHAT_MODELS: CustomModel[] = [
     enabled: true,
     isBuiltIn: true,
   },
-  {
-    name: ChatModels.AZURE_OPENAI,
-    provider: ChatModelProviders.AZURE_OPENAI,
-    enabled: true,
-    isBuiltIn: true,
-  },
 ];
 
 export enum EmbeddingModelProviders {
-  OPENAI = "openai",
-  COHEREAI = "cohereai",
-  GOOGLE = "google",
-  AZURE_OPENAI = "azure_openai",
-  OLLAMA = "ollama",
-  OPENAI_FORMAT = "3rd party (openai-format)",
-  // HUGGINGFACE = "huggingface",
-  // VOYAGEAI = "voyageai",
+  COPILOT = "github copilot",
 }
 
 export enum EmbeddingModels {
   OPENAI_EMBEDDING_ADA_V2 = "text-embedding-ada-002",
   OPENAI_EMBEDDING_SMALL = "text-embedding-3-small",
-  OPENAI_EMBEDDING_LARGE = "text-embedding-3-large",
-  AZURE_OPENAI = "azure-openai",
-  COHEREAI_EMBED_MULTILINGUAL_LIGHT_V3_0 = "embed-multilingual-light-v3.0",
-  GOOGLE_ENG = "text-embedding-004",
+  OPENAI_EMBEDDING_SMALL_INF = "text-embedding-3-small-inference",
 }
 
 export const BUILTIN_EMBEDDING_MODELS: CustomModel[] = [
   {
     name: EmbeddingModels.OPENAI_EMBEDDING_SMALL,
-    provider: EmbeddingModelProviders.OPENAI,
+    provider: EmbeddingModelProviders.COPILOT,
     enabled: true,
     isBuiltIn: true,
     isEmbeddingModel: true,
     core: true,
-  },
-  {
-    name: EmbeddingModels.OPENAI_EMBEDDING_LARGE,
-    provider: EmbeddingModelProviders.OPENAI,
-    enabled: true,
-    isBuiltIn: true,
-    isEmbeddingModel: true,
-  },
-  {
-    name: EmbeddingModels.COHEREAI_EMBED_MULTILINGUAL_LIGHT_V3_0,
-    provider: EmbeddingModelProviders.COHEREAI,
-    enabled: true,
-    isBuiltIn: true,
-    isEmbeddingModel: true,
-  },
-  {
-    name: EmbeddingModels.GOOGLE_ENG,
-    provider: EmbeddingModelProviders.GOOGLE,
-    enabled: true,
-    isBuiltIn: true,
-    isEmbeddingModel: true,
-  },
-  {
-    name: EmbeddingModels.AZURE_OPENAI,
-    provider: EmbeddingModelProviders.AZURE_OPENAI,
-    enabled: true,
-    isBuiltIn: true,
-    isEmbeddingModel: true,
   },
 ];
 
@@ -212,8 +146,8 @@ export const DEFAULT_SETTINGS: CopilotSettings = {
   googleApiKey: "",
   openRouterAiApiKey: "",
   defaultChainType: ChainType.LLM_CHAIN,
-  defaultModelKey: ChatModels.GPT_4o + "|" + ChatModelProviders.OPENAI,
-  embeddingModelKey: EmbeddingModels.OPENAI_EMBEDDING_SMALL + "|" + ChatModelProviders.OPENAI,
+  defaultModelKey: ChatModels.GPT_4o + "|" + ChatModelProviders.COPILOT,
+  embeddingModelKey: EmbeddingModels.OPENAI_EMBEDDING_SMALL + "|" + ChatModelProviders.COPILOT,
   temperature: 0.1,
   maxTokens: 1000,
   contextTurns: 15,

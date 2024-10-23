@@ -6,30 +6,93 @@ import { requestUrl } from "obsidian";
 import OpenAI from "openai";
 
 // Migrated to OpenAI v4 client from v3: https://github.com/openai/openai-node/discussions/217
-export class ProxyChatOpenAI extends ChatOpenAI {
+
+const token_url = "https://api.github.com/copilot_internal/v2/token";
+
+export class GithubCOPILOT extends ChatOpenAI {
   constructor(fields?: any) {
     super(fields ?? {});
 
-    // Reinitialize the client with the updated clientConfig
-    this["client"] = new OpenAI({
-      ...this["clientConfig"],
-      baseURL: fields.openAIProxyBaseUrl,
-      dangerouslyAllowBrowser: true,
-      fetch: fields.enableCors ? safeFetch : undefined,
+    const GITHUB_TOKEN = this["clientConfig"].apiKey;
+    const headers = {
+      authorization: `token ${GITHUB_TOKEN}`,
+      "editor-version": "Neovim/0.6.1",
+      "editor-plugin-version": "copilot.vim/1.16.0",
+      "user-agent": "GithubCopilot/1.155.0",
+    };
+    let pointer = this["client"];
+    function update_key() {
+      return requestUrl({ url: token_url, headers })
+        .then((response) => {
+          const data = response.json;
+          if (pointer) {
+            pointer.apiKey = data.token;
+          }
+          console.log("TOKEN Expire in:", (data.expires_at * 1000 - Date.now()) / 1000, "seconds");
+          setTimeout(update_key, data.expires_at * 1000 - Date.now() - 10_000); // 10 seconds before expiry
+          return data.token;
+        })
+        .catch((error) => console.error("Error:", error));
+    }
+
+    update_key().then((apiKey) => {
+      this["client"] = new OpenAI({
+        ...this["clientConfig"],
+        apiKey,
+        dangerouslyAllowBrowser: true,
+        fetch: safe(safeFetch, update_key),
+        // modelName: "gpt-3.5-turbo",
+        defaultHeaders: {
+          "Editor-Version": "vscode/1.91.1",
+        },
+      });
+      pointer = this["client"];
     });
   }
 }
 
-export class ProxyOpenAIEmbeddings extends OpenAIEmbeddings {
+export class GithubCOPILOTEmbeddings extends OpenAIEmbeddings {
   constructor(fields?: any) {
     super(fields ?? {});
 
-    // Reinitialize the client with the updated clientConfig
-    this["client"] = new OpenAI({
-      ...this["clientConfig"],
-      baseURL: fields.openAIEmbeddingProxyBaseUrl,
-      dangerouslyAllowBrowser: true,
-      fetch: safeFetch,
+    const GITHUB_TOKEN = this["clientConfig"].apiKey;
+    const headers = {
+      authorization: `token ${GITHUB_TOKEN}`,
+      "editor-version": "Neovim/0.6.1",
+      "editor-plugin-version": "copilot.vim/1.16.0",
+      "user-agent": "GithubCopilot/1.155.0",
+    };
+    let pointer = this["client"];
+    function update_key() {
+      return requestUrl({ url: token_url, headers })
+        .then((response) => {
+          const data = response.json;
+          if (pointer) {
+            pointer.apiKey = data.token;
+          }
+          console.log(
+            "Embeddings TOKEN Expire in:",
+            (data.expires_at * 1000 - Date.now()) / 1000,
+            "seconds"
+          );
+          setTimeout(update_key, data.expires_at * 1000 - Date.now() - 10_000); // 10 seconds before expiry
+          return data.token;
+        })
+        .catch((error) => console.error("Error:", error));
+    }
+
+    update_key().then((apiKey) => {
+      this["client"] = new OpenAI({
+        ...this["clientConfig"],
+        apiKey,
+        dangerouslyAllowBrowser: true,
+        fetch: safe(safeFetch, update_key),
+        // modelName: "gpt-3.5-turbo",
+        defaultHeaders: {
+          "Editor-Version": "vscode/1.91.1",
+        },
+      });
+      pointer = this["client"];
     });
   }
 }
@@ -44,6 +107,21 @@ export class ChatAnthropicWrapped extends ChatAnthropic {
   }
 }
 
+function safe(fetch: typeof window.fetch, update_key: () => Promise<string>) {
+  return async (url: string, options: RequestInit) => {
+    if (url === token_url) {
+      return fetch(url, options);
+    }
+    const response = await fetch(url, options);
+    if (response.status === 401) {
+      console.log("Token expired, updating...");
+      await update_key();
+      return fetch(url, options);
+    }
+    return response;
+  };
+}
+
 /** Proxy function to use in place of fetch() to bypass CORS restrictions.
  * It currently doesn't support streaming until this is implemented
  * https://forum.obsidian.md/t/support-streaming-the-request-and-requesturl-response-body/87381 */
@@ -56,16 +134,26 @@ async function safeFetch(url: string, options: RequestInit): Promise<Response> {
     // frequency_penalty: default 0, but perplexity.ai requires 1 by default.
     // so, delete this argument for now
     delete newBody["frequency_penalty"];
+    if (url.endsWith("/embeddings") && typeof newBody.input === "string") {
+      newBody.input = [newBody.input];
+    }
     options.body = JSON.stringify(newBody);
   }
 
-  const response = await requestUrl({
-    url,
-    contentType: "application/json",
-    headers: options.headers as Record<string, string>,
-    method: "POST",
-    body: options.body?.toString(),
-  });
+  console.log("safeFetch", url, options);
+  let response: any;
+  try {
+    response = await requestUrl({
+      url,
+      contentType: "application/json",
+      headers: options.headers as Record<string, string>,
+      method: "POST",
+      body: options.body?.toString(),
+    });
+  } catch (e) {
+    console.error("safeFetch error", url, e);
+    throw e;
+  }
 
   return {
     ok: response.status >= 200 && response.status < 300,
@@ -79,6 +167,11 @@ async function safeFetch(url: string, options: RequestInit): Promise<Response> {
     bodyUsed: true,
     json: () => response.json,
     text: async () => response.text,
+    bytes: async () => {
+      const text = await response.text;
+      const encoder = new TextEncoder();
+      return encoder.encode(text);
+    },
     clone: () => {
       throw new Error("not implemented");
     },

@@ -82,26 +82,9 @@ const ApiSettings: React.FC<ApiSettingsProps> = ({
               target="_blank"
               rel="noopener noreferrer"
             >
-              https://platform.openai.com/api-keys
+              TODO
             </a>
           </p>
-          <ApiSetting
-            title="OpenAI Organization ID (optional)"
-            value={openAIOrgId}
-            setValue={setOpenAIOrgId}
-            placeholder="Enter OpenAI Organization ID if applicable"
-          />
-        </div>
-        <div className="warning-message">
-          <span>If you are a new user, try </span>
-          <a
-            href="https://platform.openai.com/playground?mode=chat"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            OpenAI playground
-          </a>
-          <span> to see if you have correct API access first.</span>
         </div>
       </div>
       <br />
@@ -127,131 +110,6 @@ const ApiSettings: React.FC<ApiSettingsProps> = ({
             Your API key is stored locally and is only used to make requests to Google's services.
           </p>
         </div>
-      </Collapsible>
-
-      <Collapsible title="Anthropic API Settings">
-        <div>
-          <ApiSetting
-            title="Anthropic API Key"
-            value={anthropicApiKey}
-            setValue={setAnthropicApiKey}
-            placeholder="Enter Anthropic API Key"
-          />
-          <p>
-            If you have Anthropic API access, you can get the API key{" "}
-            <a
-              href="https://console.anthropic.com/settings/keys"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              here
-            </a>
-            .
-            <br />
-            Your API key is stored locally and is only used to make requests to Anthropic's
-            services.
-          </p>
-        </div>
-      </Collapsible>
-
-      <Collapsible title="OpenRouter.ai API Settings">
-        <div>
-          <ApiSetting
-            title="OpenRouter AI API Key"
-            value={openRouterAiApiKey}
-            setValue={setOpenRouterAiApiKey}
-            placeholder="Enter OpenRouter AI API Key"
-          />
-          <p>
-            You can get your OpenRouterAI key{" "}
-            <a href="https://openrouter.ai/keys" target="_blank" rel="noopener noreferrer">
-              here
-            </a>
-            .
-            <br />
-            Find models{" "}
-            <a href="https://openrouter.ai/models" target="_blank" rel="noopener noreferrer">
-              here
-            </a>
-            .
-          </p>
-        </div>
-      </Collapsible>
-
-      <Collapsible title="Azure OpenAI API Settings">
-        <div>
-          <ApiSetting
-            title="Azure OpenAI API Key"
-            value={azureOpenAIApiKey}
-            setValue={setAzureOpenAIApiKey}
-            placeholder="Enter Azure OpenAI API Key"
-          />
-          <ApiSetting
-            title="Azure OpenAI API Instance Name"
-            value={azureOpenAIApiInstanceName}
-            setValue={setAzureOpenAIApiInstanceName}
-            placeholder="Enter Azure OpenAI API Instance Name"
-            type="text"
-          />
-          <ApiSetting
-            title="Azure OpenAI API Deployment Name"
-            description="This is your actual model, no need to pass a model name separately."
-            value={azureOpenAIApiDeploymentName}
-            setValue={setAzureOpenAIApiDeploymentName}
-            placeholder="Enter Azure OpenAI API Deployment Name"
-            type="text"
-          />
-          <ApiSetting
-            title="Azure OpenAI API Version"
-            value={azureOpenAIApiVersion}
-            setValue={setAzureOpenAIApiVersion}
-            placeholder="Enter Azure OpenAI API Version"
-            type="text"
-          />
-          <ApiSetting
-            title="Azure OpenAI API Embedding Deployment Name"
-            description="(Optional) For embedding provider Azure OpenAI"
-            value={azureOpenAIApiEmbeddingDeploymentName}
-            setValue={setAzureOpenAIApiEmbeddingDeploymentName}
-            placeholder="Enter Azure OpenAI API Embedding Deployment Name"
-            type="text"
-          />
-        </div>
-      </Collapsible>
-
-      <Collapsible title="Groq API Settings">
-        <div>
-          <ApiSetting
-            title="Groq API Key"
-            value={groqApiKey}
-            setValue={setGroqApiKey}
-            placeholder="Enter Groq API Key"
-          />
-          <p>
-            If you have Groq API access, you can get the API key{" "}
-            <a href="https://console.groq.com/keys" target="_blank" rel="noopener noreferrer">
-              here
-            </a>
-            .
-            <br />
-            Your API key is stored locally and is only used to make requests to Groq's services.
-          </p>
-        </div>
-      </Collapsible>
-
-      <Collapsible title="Cohere API Settings">
-        <ApiSetting
-          title="Cohere API Key"
-          value={cohereApiKey}
-          setValue={setCohereApiKey}
-          placeholder="Enter Cohere API Key"
-        />
-        <p>
-          Get your free Cohere API key{" "}
-          <a href="https://dashboard.cohere.ai/api-keys" target="_blank" rel="noreferrer">
-            here
-          </a>
-        </p>
       </Collapsible>
     </div>
   );

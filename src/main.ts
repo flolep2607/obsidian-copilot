@@ -1,3 +1,4 @@
+process.env["OPENAI_BASE_URL"] = "https://api.githubcopilot.com/";
 import ChainManager from "@/LLMProviders/chainManager";
 import VectorStoreManager from "@/VectorStoreManager";
 import { CustomModel, LangChainParams, SetChainOptions } from "@/aiParams";
@@ -455,7 +456,7 @@ export default class CopilotPlugin extends Plugin {
 
   async activateView(): Promise<void> {
     this.app.workspace.detachLeavesOfType(CHAT_VIEWTYPE);
-    this.activateViewPromise = this.app.workspace.getRightLeaf(false).setViewState({
+    this.activateViewPromise = this.app.workspace.getRightLeaf(false)!.setViewState({
       type: CHAT_VIEWTYPE,
       active: true,
     });
